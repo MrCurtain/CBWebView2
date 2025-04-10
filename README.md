@@ -5,6 +5,9 @@ CBWebView2是一个用于Unreal Engine 5.4的WebView2浏览器插件，它允许
 ## 特性
 
 - 在Unreal Engine中无缝集成Microsoft Edge WebView2
+- 支持可高达16k分辨率网页输出
+- 支持H264视频播放
+- 支持鼠标穿透，网页层级关系
 - 支持现代Web标准和技术
 - 双向JavaScript通信
 - 自定义事件处理
