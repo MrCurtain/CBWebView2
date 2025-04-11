@@ -12,6 +12,7 @@
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Images/SImage.h"
 #include "Brushes/SlateColorBrush.h"
+#include "Components/SlateWrapperTypes.h"
 
 
 #define LOCTEXT_NAMESPACE "CBWebView2"
@@ -179,7 +180,7 @@ void SCBWebView2::Construct(const FArguments& InArgs, TSharedRef<SWindow> InPare
 									.HeightOverride(Height)
 									[
 										SAssignNew(NewImage,SImage)
-										.Image(new FSlateColorBrush(FLinearColor(1, 1, 1, 0))) // 半透明红色
+										.Image(new FSlateColorBrush(FLinearColor(1, 1, 1, 0.3))) // 半透明红色
 									];
 
 								Images.Add(NewImage);
@@ -203,44 +204,39 @@ void SCBWebView2::Construct(const FArguments& InArgs, TSharedRef<SWindow> InPare
 		WebView2Window->OnNavigationCompleted.BindLambda([this](bool bSuccess)
 		{
 			OnWebView2NavigationCompleted.ExecuteIfBound(bSuccess);
-		
-		});
-
-		WebView2Window->OnNavigationStarting.BindLambda([this](FString InURL)
-		{
-			OnWebView2NavigationStarting.ExecuteIfBound(InURL);
 
 			// 清除现有的位置标记和区域数据
 			PositionOverlay->ClearChildren();
 			Images.Empty();
-			
 			RECT Bounds=WebView2Window->GetBounds();
-			float OffsetY=Bounds.top;
-			float OffsetX=Bounds.left;
 			float SizeY=Bounds.bottom-Bounds.top;
 			float SizeX=Bounds.right-Bounds.left;
-			UE_LOG(LogTemp,Warning,TEXT("%f,%f,%f,%f"),OffsetX, OffsetY, SizeX, SizeY);
+			
 		// 创建位置标记
-
 			TSharedPtr<SImage> NewImage;
 			TSharedPtr<SBox> PositionBox = 
 				SNew(SBox)
-				.WidthOverride(SizeX)
-				.HeightOverride(SizeY)
 				[
 					SAssignNew(NewImage,SImage)
-					.Image(new FSlateColorBrush(FLinearColor(0, 1, 1, 0))) // 半透明红
+					.Image(new FSlateColorBrush(FLinearColor(0, 1, 1, 0.3))) // 半透明红
 				];
 			
 			Images.Add(NewImage);
 		// 添加到PositionOverlay
 			PositionOverlay->AddSlot()
 			//.Padding(FMargin(OffsetX, OffsetY, 0, 0)) // 使用 Padding 设置左上角位置
-			.HAlign(HAlign_Left)
-			.VAlign(VAlign_Top)
+			.HAlign(HAlign_Fill)
+			.VAlign(VAlign_Fill)
 			[
 				PositionBox.ToSharedRef()
 			];			
+		});
+
+		WebView2Window->OnNavigationStarting.BindLambda([this](FString InURL)
+		{
+			OnWebView2NavigationStarting.ExecuteIfBound(InURL);
+
+			
 		});
 		WebView2Window->OnNewWindowRequested.BindLambda([this](FString InURL)
 		{
@@ -279,8 +275,13 @@ FReply SCBWebView2::OnMouseButtonDown(const FGeometry& MyGeometry, const FPointe
 {
 	UWebView2Subsystem* Subsystem = UWebView2Subsystem::GetWebView2Subsystem();
 
+	if(!WebView2Window)
+	{
+		return  SCompoundWidget::OnMouseButtonDown(MyGeometry, MouseEvent);
+	}
+	
 	// 直接使用 Tick 中计算好的状态
-	if (Subsystem->bIsMouseOverPositionArea)
+	if (WebView2Window->bIsMouseOverPositionArea)
 	{
 		// 根据您的修改，如果在区域内，事件不被处理 (Unhandled)，允许传递
 		UE_LOG(LogTemp, Log, TEXT("Mouse button down over position area - Unhandled"));
@@ -354,9 +355,18 @@ int32 SCBWebView2::OnPaint(const FPaintArgs& Args, const FGeometry& AllottedGeom
 	if (WebView2Window)
 	{
 		FixSacale=AllottedGeometry.Scale;
-		//UE_LOG(LogTemp,Warning,TEXT("%f"),FixSacale);
 		FVector2D Offset = AllottedGeometry.LocalToAbsolute(FVector2D::ZeroVector);
 		FVector2D Size = AllottedGeometry.GetDrawSize();
+
+		if(Size.X>16000.f || Size.X<0.f)
+		{
+			Size.X=100.f;
+		}
+
+		if(Size.Y>16000.f || Size.Y<0.f)
+		{
+			Size.Y=100.f;
+		}
 		
 		POINT Of;
 		Of.x = Offset.X;
@@ -366,7 +376,7 @@ int32 SCBWebView2::OnPaint(const FPaintArgs& Args, const FGeometry& AllottedGeom
 		Si.y = bShowAddressBar || bShowControls ? Size.Y-30*AllottedGeometry.Scale : Size.Y;
 		
 		WebView2Window->SetBounds(Of, Si);
-
+		//UE_LOG(LogTemp,Warning,TEXT("%f,%f"), Size.X, Size.Y);
 		if(WebView2Window->GetWebView2CompositionHost())
 		{
 			if(LayerId !=WebView2Window->GetLayerID())
@@ -521,6 +531,45 @@ FText SCBWebView2::GetAddressBarUrlText() const
 		return FText::FromString(URL);
 	}
 	return FText::GetEmpty();
+}
+
+void SCBWebView2::SetVisible(ESlateVisibility InVisibility)
+{
+	if (WebView2Window.IsValid())
+	{
+		WebView2Window->SetVisible(InVisibility);
+	}
+	TAttribute<EVisibility>  EVisib;
+	switch (InVisibility)
+	{
+	case ESlateVisibility::Collapsed:
+		EVisib.Set(EVisibility::Collapsed);
+		break;
+	case ESlateVisibility::Hidden:
+		EVisib.Set(EVisibility::Hidden);
+		break;
+	case ESlateVisibility::Visible:
+		EVisib.Set(EVisibility::Visible);
+		break;
+	case ESlateVisibility::HitTestInvisible:
+		EVisib.Set(EVisibility::HitTestInvisible);
+		break;
+	case ESlateVisibility::SelfHitTestInvisible:
+		EVisib.Set(EVisibility::SelfHitTestInvisible);
+		break;
+	}
+	
+	SetVisibility(EVisib);
+	
+}
+
+ESlateVisibility SCBWebView2::GetVisible()
+{
+	if (WebView2Window.IsValid())
+	{
+		return WebView2Window->GetVisible();
+	}
+	return ESlateVisibility::Hidden;
 }
 
 FReply SCBWebView2::OnBackClicked()

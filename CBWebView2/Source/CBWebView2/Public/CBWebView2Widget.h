@@ -52,10 +52,13 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "WebView2|Event")
 	FOnNewWindowRequested OnNewWindowRequested;
-	
+
+public:
+	UFUNCTION(BlueprintCallable, Category="Widget")
+	virtual void SetVisible(ESlateVisibility InVisibility);
 public:
 	/**设置背景演示，若A=0，则表现为透明背景*/
-	UFUNCTION(Blueprintable,BlueprintCallable,Category="Appearence")
+	UFUNCTION(BlueprintCallable,Category="Appearence")
 	void SetBackgroundColor(FColor InBackgroundColor);
 
 	/**执行前端脚本*/

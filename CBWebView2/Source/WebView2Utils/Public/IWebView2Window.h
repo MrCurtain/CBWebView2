@@ -50,9 +50,9 @@ public:
 	/**获取webview大小*/
 	virtual RECT GetBounds() const = 0;
 	/**设置可见性*/
-	virtual void SetVisible(bool bInVisible) = 0;
+	virtual void SetVisible(ESlateVisibility InVisibility) = 0;
 	/**获取可见性*/
-	virtual bool GetVisible() const = 0;
+	virtual ESlateVisibility  GetVisible() const = 0;
 	/**禁用鼠标*/
 
 	/** 获取当前文档的加载状态。 */

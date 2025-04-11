@@ -132,9 +132,9 @@ public:
 
 	
 	/**设置可见性*/
-	virtual void SetVisible(bool bInVisible) override;
+	virtual void SetVisible(ESlateVisibility InVisibility) override;
 	/**获取可见性*/
-	virtual bool GetVisible() const override;
+	virtual ESlateVisibility  GetVisible() const override;
 
 	/** 获取当前文档的加载状态。 */
 	virtual EWebView2DocumentState GetDocumentLoadingState() const override;
@@ -220,7 +220,7 @@ public:
 	
 	winrt::Windows::UI::Composition::ContainerVisual WebViewVisual={nullptr};
 
-	RECT WebuiBound;
+
 	HWND MainWindow = nullptr;
 
 	Microsoft::WRL::ComPtr<IDCompositionDevice> DcompDevice;
@@ -261,7 +261,9 @@ public:
 	bool bIsMouseOverPositionArea = true;
 private:
 
-	bool bVisible;
+	RECT WebuiBound;
+	
+	ESlateVisibility Visible;
 	 bool bInitialized;
 	FString InitialURL;
 	FGuid ID;

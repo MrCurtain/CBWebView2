@@ -92,6 +92,10 @@ public:
 	* @return 地址栏 URL。
 	*/
 	FText GetAddressBarUrlText() const;
+
+	void SetVisible(ESlateVisibility InVisibility);
+
+	ESlateVisibility GetVisible();
 private:
 	/** Navigate backwards. */
 	FReply OnBackClicked();

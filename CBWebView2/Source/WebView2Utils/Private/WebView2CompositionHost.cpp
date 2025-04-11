@@ -3,6 +3,7 @@
 #include "WebView2Log.h"
 #include "WebView2Settings.h"
 #include "WebView2Window.h"
+#include "Components/SlateWrapperTypes.h"
 
 FWebView2CompositionHost::FWebView2CompositionHost(HWND InHwnd, winrt::Windows::System::DispatcherQueueController QueueController)
 	:MDispatcherQueueController(QueueController)
@@ -39,7 +40,8 @@ void FWebView2CompositionHost::Initialize()
 
 void FWebView2CompositionHost::CreateWebViewVisual(TSharedRef<FWebView2Window> WebView2Window)
 {
-
+	UE_LOG(LogWebView2,Log,TEXT("WebView2Window is Created"))
+	
 	if(UIVisual )
 	{
 		if (WebView2Window->Controller)
@@ -254,7 +256,7 @@ TArray<TSharedRef<FWebView2Window>> FWebView2CompositionHost::FindWebviewFromPoi
 			if ((Point.x >= Offset.x) && (Point.x < Offset.x + Size.x) && (Point.y >= Offset.y) &&
 				(Point.y < Offset.y + Size.y))
 			{
-				if(Element.Value->GetVisible() &&Element.Value->bIsMouseOverPositionArea)
+				if(Element.Value->GetVisible()==ESlateVisibility::Visible &&Element.Value->bIsMouseOverPositionArea)
 				{
 					Windows.Add(Element.Value);
 				}

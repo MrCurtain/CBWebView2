@@ -64,6 +64,17 @@ TSharedRef<SWidget> UCBWebView2Widget::RebuildWidget()
 	
 }
 
+
+void UCBWebView2Widget::SetVisible(ESlateVisibility InVisibility)
+{
+	if(CBWebView2)
+	{
+		CBWebView2->SetVisible(InVisibility);
+	}
+
+	SetVisibility(InVisibility);
+}
+
 void UCBWebView2Widget::SetBackgroundColor(FColor InBackgroundColor)
 {
 	if(CBWebView2)

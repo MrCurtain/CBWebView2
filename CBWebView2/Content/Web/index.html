@@ -87,7 +87,11 @@
     document.body.style.height = `${designHeight}px`;
     
     // 缩放后发送元素位置信息
-   sendElementPositions();
+
+  // 延迟0.1秒后发送元素位置信息
+  setTimeout(() => {
+      sendElementPositions();
+    }, 100);
   }
   
   // 获取元素缩放后的位置和尺寸

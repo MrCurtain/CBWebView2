@@ -22,6 +22,9 @@
 #include "WebView2Manager.h"
 #include "WebView2Settings.h"
 #include "WebView2Subsystem.h"
+#include "Components/SlateWrapperTypes.h"
+
+
 namespace winSystem = winrt::Windows::System;
 
 FWebView2Window::FWebView2Window(HWND InHwnd, const FGuid UniqueID, const FString InInitialURL,FColor InBackgroundColor)
@@ -32,6 +35,7 @@ FWebView2Window::FWebView2Window(HWND InHwnd, const FGuid UniqueID, const FStrin
 	,DocumentState(EWebView2DocumentState::NoDocument)
 {
 	InitializeWebView();
+	
 }
 
 FWebView2Window::~FWebView2Window()
@@ -41,9 +45,9 @@ FWebView2Window::~FWebView2Window()
 void FWebView2Window::InitializeWebView()
 {
 	bInitialized=false;
-	bVisible=true;
+	Visible=ESlateVisibility::Visible;
 	DcompDevice = nullptr;
-
+	SetBounds(POINT(0.f,0.f),POINT(1.f,1.f));
 	UWebView2Settings* Settings=UWebView2Settings::Get();
 
 	if(Settings->WebView2Mode ==EWebView2Mode::VISUAL_DCOMP ||
@@ -602,18 +606,25 @@ RECT FWebView2Window::GetBounds() const
 	return WebuiBound;
 }
 
-void FWebView2Window::SetVisible(bool bInVisible)
+void FWebView2Window::SetVisible(ESlateVisibility InVisibility)
 {
-	bVisible=bInVisible;
-	if(Controller)
+	Visible=InVisibility;
+	if(InVisibility==ESlateVisibility::Collapsed ||InVisibility==ESlateVisibility::Hidden)
 	{
-		Controller->put_IsVisible(bVisible);
+		if(Controller)
+		{
+			Controller->put_IsVisible(false);
+		}
+	}
+	else
+	{
+		Controller->put_IsVisible(true);
 	}
 }
 
-bool FWebView2Window::GetVisible() const
+ESlateVisibility FWebView2Window::GetVisible() const
 {
-	return bVisible;
+	return Visible;
 }
 
 EWebView2DocumentState FWebView2Window::GetDocumentLoadingState() const
@@ -745,7 +756,15 @@ HRESULT FWebView2Window::OnCreateCoreWebView2ControllerCompleted(HRESULT Result,
 		WebView->add_WebMessageReceived(MessageReceive.Get(), &MessageReceiveToken);
 
 		Controller->put_Bounds(WebuiBound);
-		Controller->put_IsVisible(bVisible);
+		if(Visible==ESlateVisibility::Collapsed ||Visible==ESlateVisibility::Hidden)
+		{
+			Controller->put_IsVisible(false);
+		}
+		else
+		{
+			Controller->put_IsVisible(true);
+		}
+		
 		WebView->Navigate(*InitialURL);
 
 		SetBackgroundColor(BackgroundColor);
