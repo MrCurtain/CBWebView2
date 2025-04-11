@@ -94,6 +94,50 @@
     }, 100);
   }
   
+
+  // 添加一个等待alert关闭的函数
+  function waitForAlertClose() {
+      return new Promise(resolve => {
+          const originalAlert = window.alert;
+          window.alert = function(msg) {
+              originalAlert(msg);
+              window.alert = originalAlert; // 恢复原始alert
+              resolve();
+          };
+      });
+  }
+  
+  // 修改UECall函数
+  function UECall(messageData) {
+
+     
+
+    // 获取其他元素位置
+    const positions = getScaledElementPositions();
+    // 添加alert位置信息
+   
+    // 获取alert弹框的位置和尺寸(需要特殊处理)
+    const alertBox = {
+        x: (window.innerWidth - 400) / 2, // 假设alert宽度约300px
+        y: 0, // 假设alert高度约150px
+        width: 400,
+        high: 150,
+        type: "alert"
+    };
+    positions.push(alertBox);
+    
+    // 发送所有位置信息
+    window.chrome.webview.postMessage({
+        type: "webPosition",
+        position: positions
+    });
+
+    alert(messageData);
+
+    waitForAlertClose().then(() => {
+        sendElementPositions();
+    });
+  }
   // 获取元素缩放后的位置和尺寸
   function getScaledElementPositions() {
     const elements = [

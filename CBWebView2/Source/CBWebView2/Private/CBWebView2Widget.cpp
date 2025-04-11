@@ -91,6 +91,7 @@ void UCBWebView2Widget::ExecuteScript(const FString& Script, FWebView2ScriptCall
 		{
 			if(Callback.IsBound())
 			{
+				//UE_LOG(LogTemp,Warning,TEXT("%s"),*Data);
 				Callback.Execute(Data);
 			}
 		}));

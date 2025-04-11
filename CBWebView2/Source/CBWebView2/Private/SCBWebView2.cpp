@@ -180,7 +180,7 @@ void SCBWebView2::Construct(const FArguments& InArgs, TSharedRef<SWindow> InPare
 									.HeightOverride(Height)
 									[
 										SAssignNew(NewImage,SImage)
-										.Image(new FSlateColorBrush(FLinearColor(1, 1, 1, 0.3))) // 半透明红色
+										.Image(new FSlateColorBrush(FLinearColor(1, 1, 1, 0))) // 半透明红色
 									];
 
 								Images.Add(NewImage);
@@ -218,7 +218,7 @@ void SCBWebView2::Construct(const FArguments& InArgs, TSharedRef<SWindow> InPare
 				SNew(SBox)
 				[
 					SAssignNew(NewImage,SImage)
-					.Image(new FSlateColorBrush(FLinearColor(0, 1, 1, 0.3))) // 半透明红
+					.Image(new FSlateColorBrush(FLinearColor(0, 1, 1, 0))) // 半透明红
 				];
 			
 			Images.Add(NewImage);

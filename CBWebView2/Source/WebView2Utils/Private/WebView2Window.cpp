@@ -662,7 +662,7 @@ void FWebView2Window::ExecuteScript(const FString Script, TFunction<void(const F
 				{
 					if (InCallback)
 					{
-						//UE_LOG(LogTemp,Warning,TEXT("%s"),ResultString);
+						UE_LOG(LogTemp,Warning,TEXT("%s"),ResultString);
 						InCallback(ResultString);
 					}
 				}
