@@ -17,8 +17,8 @@ CBWebView2是一个用于Unreal Engine 5.4的WebView2浏览器插件，它允许
 ## 安装要求
 
 - Unreal Engine 5.4或更高版本
-- Windows操作系统
-- Microsoft Edge WebView2 Runtime
+- Windows10以上版本操作系统
+- 确保电脑已安装Microsoft Edge WebView2 Runtime
 
 ## 安装指南
 
@@ -26,6 +26,7 @@ CBWebView2是一个用于Unreal Engine 5.4的WebView2浏览器插件，它允许
 2. 将此仓库克隆或下载到`Plugins`文件夹中
 3. 重新生成您的Visual Studio项目
 4. 在项目中启动插件
+5. 官方代码案例地址：https://github.com/MicrosoftEdge/WebView2Samples
 
 ## 许可证
 本项目使用GPL-3.0许可证 - 有关详细信息，请参阅 LICENSE 文件。
