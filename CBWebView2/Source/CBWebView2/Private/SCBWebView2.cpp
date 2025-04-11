@@ -45,6 +45,7 @@ void SCBWebView2::Construct(const FArguments& InArgs, TSharedRef<SWindow> InPare
 	OnebView2CursorChangedNactive=InArgs._NewOnCursorChangedNactive;
 	bShowAddressBar=InArgs._ShowAddressBar;
 	bShowControls=InArgs._ShowControls;
+	bShowTouchArea=InArgs._ShowTouchArea;
 	bShowInitialThrobber = InArgs._ShowInitialThrobber;
 	
 		ChildSlot
@@ -139,7 +140,7 @@ void SCBWebView2::Construct(const FArguments& InArgs, TSharedRef<SWindow> InPare
 			InitializeURL,
 			BackgroundColor);
 		
-		WebView2Window->OnWebView2MessageReceived.BindLambda([this](FString Message)
+		WebView2Window->OnWebView2MessageReceived.BindLambda([this,InArgs](FString Message)
 		{
 			OnWebView2MessageReceived.ExecuteIfBound(Message);
 				// 解析JSON
@@ -180,7 +181,7 @@ void SCBWebView2::Construct(const FArguments& InArgs, TSharedRef<SWindow> InPare
 									.HeightOverride(Height)
 									[
 										SAssignNew(NewImage,SImage)
-										.Image(new FSlateColorBrush(FLinearColor(1, 1, 1, 0))) // 半透明红色
+										.Image( InArgs._ShowTouchArea ? (new FSlateColorBrush(FLinearColor(1, 0, 0, 0.3))) :(new FSlateColorBrush(FLinearColor(1, 0, 0, 0))))
 									];
 
 								Images.Add(NewImage);
@@ -201,7 +202,7 @@ void SCBWebView2::Construct(const FArguments& InArgs, TSharedRef<SWindow> InPare
 			
 		});
 
-		WebView2Window->OnNavigationCompleted.BindLambda([this](bool bSuccess)
+		WebView2Window->OnNavigationCompleted.BindLambda([this,InArgs](bool bSuccess)
 		{
 			OnWebView2NavigationCompleted.ExecuteIfBound(bSuccess);
 
@@ -218,7 +219,7 @@ void SCBWebView2::Construct(const FArguments& InArgs, TSharedRef<SWindow> InPare
 				SNew(SBox)
 				[
 					SAssignNew(NewImage,SImage)
-					.Image(new FSlateColorBrush(FLinearColor(0, 1, 1, 0))) // 半透明红
+					.Image( InArgs._ShowTouchArea ? (new FSlateColorBrush(FLinearColor(1, 0, 0, 0.3))) :(new FSlateColorBrush(FLinearColor(1, 0, 0, 0))))
 				];
 			
 			Images.Add(NewImage);

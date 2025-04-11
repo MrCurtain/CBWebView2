@@ -21,6 +21,7 @@ public class WebView2Utils : ModuleRules
                 "Core",
                 "WebView2",
                 "DeveloperSettings",
+                "UMG"
             }
         );
         

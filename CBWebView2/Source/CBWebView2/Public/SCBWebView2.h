@@ -12,16 +12,23 @@ public:
 		: _URL(TEXT("https://cn.bing.com/?mkt=zh-CN"))
 		,_Color(FColor(255,255,255,255))
 		, _ShowAddressBar(false)
+		,_ShowTouchArea(false)
 		, _ShowControls(false)
 		,_ShowInitialThrobber(false)
 		
 	{
 		
 	}
-		
+
+		/**网页链接*/
 		SLATE_ARGUMENT(FString,URL)
-		
+
+		/**网页背景颜色*/
 		SLATE_ARGUMENT(FColor,Color)
+		
+		/**是否显示网页可点击区域*/
+		SLATE_ARGUMENT(bool,ShowTouchArea)
+		
 		/** Whether to show an address bar. */
 		SLATE_ARGUMENT(bool, ShowAddressBar)
 
@@ -127,10 +134,11 @@ public:
 	bool bShowInitialThrobber;
 	/**是否显示地址栏*/
 	bool bShowAddressBar;
-	/**是否线上控制栏*/
+	/**是否显示控制栏*/
 	bool bShowControls;
 
-	
+	/**是否线上控制栏*/
+	bool bShowTouchArea;
 public:
 	void SetBackgroundColor(FColor InBackgroundColor);
 private:

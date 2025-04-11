@@ -39,6 +39,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Appearence")
 	bool bShowControls;
 
+	/**是否显示网页可点击区域*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="WebView2|Tools")
+	bool bShowTouchArea;
 	
 public:
 	UPROPERTY(BlueprintAssignable, Category = "WebView2|Event")
